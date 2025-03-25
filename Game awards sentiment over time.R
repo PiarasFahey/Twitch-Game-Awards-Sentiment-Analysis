@@ -74,23 +74,23 @@ chat_data_sentiment_summary.1 <- chat_data_sentiment_summary.1 %>%
 chat_data_sentiment_summary.1 <- chat_data_sentiment_summary.1[1:210,]
 
 # sentiment analysis for 1 minute increments of just Emoticons
-ggplot(chat_data_sentiment_summary.1, aes(x = 12:221, y = total_value)) +
+ggplot(chat_data_sentiment_summary.1, aes(interval, total_value)) +
   geom_line(color = "#BF40BF", linewidth = 1) +
   labs(title = "Sentiment Over Time (Emotes)",
        y = "Total Sentiment Score",
-       x = "Time period (Minutes)" )
+       x = "Time period" ) +
+  scale_x_datetime(date_labels = "%H:%M", date_breaks = "30 min")
 
 
 # total sentiment for 1 minute increments
 
-total.sentiment <- as.data.frame(c(chat_data_sentiment_summary.1$total_value)+c(chat.sentiments.text$total.sentiment))
-total.sentiment <- as.data.frame(cbind(c(12:221), total.sentiment))
-colnames(total.sentiment)[1]="time"
-colnames(total.sentiment)[2]="value"
+total.sentiment <- as_tibble(c(chat_data_sentiment_summary.1$total_value)+c(chat.sentiments.text$total.sentiment))
+total.sentiment$interval <- chat_data_sentiment_summary.1$interval
 
 # sentiment analysis for 1 minute increments of Emoticons and Text
-ggplot(total.sentiment, aes(time, y = total.sentiment[,2])) +
+ggplot(total.sentiment, aes(interval, value)) +
   geom_line(color = "#BF40BF", linewidth = 1) +
   labs(title = "Sentiment Over Time (Emotes and Text combined)",
        y = "Total Sentiment Score",
-       x = "Time period (Minutes)" )
+       x = "Time period" ) +
+  scale_x_datetime(date_labels = "%H:%M", date_breaks = "30 min")
